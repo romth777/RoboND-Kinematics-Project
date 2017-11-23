@@ -106,10 +106,11 @@ Matrix([
 
 #### 3. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
-The structure of Joint4,5,6 is the Spherical Wrist, so the Wrist Center(WC) and the orientation of the End Effector(EE) can be sepalatable independantly. To do this, I did solve the position of WC then I solve the composition of rotation of the orient of EE.
-
+The structure of Joint4,5,6 is the Spherical Wrist, so the Wrist Center(WC) and the orientation of the End Effector(EE) can be sepalatable independantly. To do this, I did solve the position of WC then I solve the composition of rotation of the orient of EE. The hole of the axis and angles are in the figures.  
 The calculation of WC position is below;
+```
 pos0_WC = pos0_EE - d7 * rot0_E[:,2]
+```
 where;
  * pos0_WC : Location of the WC in the base frame
  * pos0_EE : Location of the EE in the base frame
@@ -119,10 +120,12 @@ where;
 In below we will calculate the theta1,2,3. In the basis to do that, we already know the position of all the joints in the base frame, so we will re-calculate the angles of joint using the position(=Inverse Kinematics).
 
 First, we calculate the theta 1 of Joint1 which is based on the x and y position of WC;
+![image5](./misc_images/writeup7.jpg)
 ```
 theta1 = atan2(pos0_WC[1], pos0_WC[0])
 ```
 then next, we calculate the theta2, 3;
+![image6](./misc_images/writeup6.jpg)
 ```
 theta2 = pi/2 - alpha - delta
 theta3 = pi/2 - beta - epsilon
@@ -149,3 +152,5 @@ theta6 = atan2(-rot3_6[1, 1], rot3_6[1, 0])
 #### 1. Fill in the `IK_server.py` file with properly commented python code for calculating Inverse Kinematics based on previously performed Kinematic Analysis. Your code must guide the robot to successfully complete 8/10 pick and place cycles. Briefly discuss the code you implemented and your results.
 
 In the initialize_global_variables() function, I did the initialization of valuables to make the code readable. Of course I did the Inverse Kinematics to empower the arm, and also implement the Forward kinematics to calculate the EE position Error.
+
+The result of my implementation, arm can catch the cylinder and drop it into the garbage can. The trajectory of the arm is not bad, but there are the improvable point. That is the arm path route is not efficiently. The arm first folds, then rotates, moves to the front of the cylinder, and moves to orient the wrist. Actually it may be easier to see the movement in the sense of separating motion, but I think that it is more efficient to carry out all at the same time.
