@@ -42,6 +42,7 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 4->5 | pi/2 | 0 | 0 | q5
 5->6 | -pi/2 | 0 | 0 | q6
 6->EE | 0 | 0 | 0.303 | 0
+
 where;  
 ![image2](./misc_images/writeup3.png)
 
