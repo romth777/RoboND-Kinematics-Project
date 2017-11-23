@@ -46,6 +46,67 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 where;  
 ![image2](./misc_images/writeup3.png)
 
+Also the parameters of the a and d is based on the xacro file of ["kr210.urdf.xacro"](https://github.com/romth777/RoboND-Kinematics-Project/blob/master/kuka_arm/urdf/kr210.urdf.xacro) of 316 line;
+```
+<!-- joints -->
+<joint name="fixed_base_joint" type="fixed">
+  <parent link="base_footprint"/>
+  <child link="base_link"/>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+<joint name="joint_1" type="revolute">
+  <origin xyz="0 0 0.33" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="link_1"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="${-185*deg}" upper="${185*deg}" effort="300" velocity="${123*deg}"/>
+</joint>
+<joint name="joint_2" type="revolute">
+  <origin xyz="0.35 0 0.42" rpy="0 0 0"/>
+  <parent link="link_1"/>
+  <child link="link_2"/>
+  <axis xyz="0 1 0"/>
+  <limit lower="${-45*deg}" upper="${85*deg}" effort="300" velocity="${115*deg}"/>
+</joint>
+<joint name="joint_3" type="revolute">
+  <origin xyz="0 0 1.25" rpy="0 0 0"/>
+  <parent link="link_2"/>
+  <child link="link_3"/>
+  <axis xyz="0 1 0"/>
+  <limit lower="${-210*deg}" upper="${(155-90)*deg}" effort="300" velocity="${112*deg}"/>
+</joint>
+<joint name="joint_4" type="revolute">
+  <origin xyz="0.96 0 -0.054" rpy="0 0 0"/>
+  <parent link="link_3"/>
+  <child link="link_4"/>
+  <axis xyz="1 0 0"/>
+  <limit lower="${-350*deg}" upper="${350*deg}" effort="300" velocity="${179*deg}"/>
+</joint>
+<joint name="joint_5" type="revolute">
+  <origin xyz="0.54 0 0" rpy="0 0 0"/>
+  <parent link="link_4"/>
+  <child link="link_5"/>
+  <axis xyz="0 1 0"/>
+  <limit lower="${-125*deg}" upper="${125*deg}" effort="300" velocity="${172*deg}"/>
+</joint>
+<joint name="joint_6" type="revolute">
+  <origin xyz="0.193 0 0" rpy="0 0 0"/>
+  <parent link="link_5"/>
+  <child link="link_6"/>
+  <axis xyz="1 0 0"/>
+  <limit lower="${-350*deg}" upper="${350*deg}" effort="300" velocity="${219*deg}"/>
+</joint>
+```
+And about Gripper, it is on the 202;
+```
+<joint name="gripper_joint" type="fixed">
+  <parent link="link_6"/>
+  <child link="gripper_link"/>
+  <origin xyz="0.0375 0 0" rpy="0 0 0"/>
+</joint>
+</xacro:if>
+```
+
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 First of all, the definition of the homogeneous transform from frame i-1_th to frame i_th is below;  
 ![image3](./misc_images/writeup4.png)
@@ -137,15 +198,20 @@ alpha = acos((a**2 + c**2 - b**2) / (2 * a * c))
 delta = atan2(pos0_WC - d1, sqrt(pos0_WC[0]**2 + pos0_WC[1]**2) - a1)
 epsilon = atan2(-a3, a4)
 ```
-where these are basis on the Law of cosines. Finally we can calculate the theata4,5,6. Before that we need to calculate R3_6 like below;
+where these are basis on the Law of cosines. Finally we can calculate the theata4,5,6. We will use the EE pose and theta1,2,3, we need to calculate the rotation between frame3 to 6 as below;
 ```
-R3_6
-= inverse(R0_3) * R0_6
-= (T3_4 * T4_5 * T5_6)[:3, :3]
+R3_6 = inverse(R0_3) * R0_6
+```
+where;
+ * R3_6:Rotation matrix between frame3 to 6
+ * R0_3:Rotation matrix calculated with theta1,2,3
+ * R0_6:Rotation matrix between base frame and EE
 
-theta4 = atan2(rot3_6[2,2], -rot3_6[])
-theta5 = atan2(sqrt(rot3_6[0, 2]**2 + rot3_6[2, 2]**2), rot3_6[1, 2])
-theta6 = atan2(-rot3_6[1, 1], rot3_6[1, 0])
+Hence, the thetas can be calculated with the result of above.
+```
+theta4 = atan2(R3_6[2, 2], -R3_6[0, 2])
+theta5 = atan2(sqrt(R3_6[0, 2]**2 + R3_6[2, 2]**2), R3_6[1, 2])
+theta6 = atan2(-R3_6[1, 1], R3_6[1, 0])
 ```
 
 ### Project Implementation
@@ -155,3 +221,6 @@ theta6 = atan2(-rot3_6[1, 1], rot3_6[1, 0])
 In the initialize_global_variables() function, I did the initialization of valuables to make the code readable. Of course, I did the Inverse Kinematics to empower the arm, and also implement the Forward kinematics to calculate the EE position Error.
 
 The result of my implementation, the arm can catch the cylinder and drop it into the garbage can. The trajectory of the arm is not wrong, but there is the improbable point. That is the arm path route is not efficiently. The arm first folds, then rotates, moves to the front of the cylinder, and moves to orient the wrist. It may be easier to see the movement in the sense of separating motion, but I think that it is more efficient to carry out all at the same time.
+
+![image7](./misc_images/writeup8.png)  
+![image8](./misc_images/writeup9.png)
