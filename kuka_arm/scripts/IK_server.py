@@ -158,7 +158,7 @@ def handle_calculate_IK(req):
 
 
             # Populate response for the IK request
-	        joint_trajectory_point.positions = [theta1.evalf(), theta2.evalf(), theta3.evalf(), theta4.evalf(), theta5.evalf(), theta6.evalf()]
+            joint_trajectory_point.positions = [theta1.evalf(), theta2.evalf(), theta3.evalf(), theta4.evalf(), theta5.evalf(), theta6.evalf()]
 
 	        joint_trajectory_list.append(joint_trajectory_point)
 
