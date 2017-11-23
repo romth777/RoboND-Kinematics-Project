@@ -30,7 +30,7 @@ You're reading it!
 ### Kinematic Analysis
 #### 1. Run the forward_kinematics demo and evaluate the kr210.urdf.xacro file to perform kinematic analysis of Kuka KR210 robot and derive its DH parameters.
 
-Here is the Link frames and joint structure of Kuka KR210,
+Here is the Link frames and joint structure of Kuka KR210,  
 ![image1](./misc_images/writeup2.jpg)
 
 Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
@@ -42,11 +42,11 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 4->5 | pi/2 | 0 | 0 | q5
 5->6 | -pi/2 | 0 | 0 | q6
 6->EE | 0 | 0 | 0.303 | 0
-where;
+where;  
 ![image2](./misc_images/writeup3.jpg)
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
-First of all, the definition of the homogeneous transform from frame i-1_th to frame i_th is below;
+First of all, the definition of the homogeneous transform from frame i-1_th to frame i_th is below;  
 ![image3](./misc_images/writeup4.png)
 ![image4](./misc_images/writeup5.png)
 where;
@@ -119,12 +119,12 @@ where;
 
 In below we will calculate the theta1,2,3. In the basis to do that, we already know the position of all the joints in the base frame so that we will re-calculate the angles of joint using the position(=Inverse Kinematics).
 
-First, we calculate the theta 1 of Joint1 which is based on the x and y position of WC;
+First, we calculate the theta 1 of Joint1 which is based on the x and y position of WC;  
 ![image5](./misc_images/writeup7.jpg)
 ```
 theta1 = atan2(pos0_WC[1], pos0_WC[0])
 ```
-then next, we calculate the theta2, 3;
+then next, we calculate the theta2, 3;  
 ![image6](./misc_images/writeup6.jpg)
 ```
 theta2 = pi/2 - alpha - delta
