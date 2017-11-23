@@ -94,30 +94,30 @@ T5_6 = [[1,0,0,0],
 
 ```
 
-The Generalized homogeneous transform of baselink and gripperlink is below;
+The Generalized homogeneous transform of base link and gripper link is below;
 ```python
 Matrix([
-	[cos(p)*cos(y), sin(p)*sin(r)*cos(y) - sin(y)*cos(r), sin(p)*cos(r)*cos(y) + sin(r)*sin(y), x],
-	[sin(y)*cos(p), sin(p)*sin(r)*sin(y) + cos(r)*cos(y), sin(p)*sin(y)*cos(r) - sin(r)*cos(y), y],
-	[-sin(p), sin(r)*cos(p), cos(p)*cos(r), z],
-	[0, 0, 0, 1]])
+    [cos(p)*cos(y), sin(p)*sin(r)*cos(y) - sin(y)*cos(r), sin(p)*cos(r)*cos(y) + sin(r)*sin(y), x],
+    [sin(y)*cos(p), sin(p)*sin(r)*sin(y) + cos(r)*cos(y), sin(p)*sin(y)*cos(r) - sin(r)*cos(y), y],
+    [-sin(p), sin(r)*cos(p), cos(p)*cos(r), z],
+    [0, 0, 0, 1]])
 ```
 
 
 #### 3. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
-The structure of Joint4,5,6 is the Spherical Wrist, so the Wrist Center(WC) and the orientation of the End Effector(EE) can be sepalatable independantly. To do this, I did solve the position of WC then I solve the composition of rotation of the orient of EE. The hole of the axis and angles are in the figures.  
+The structure of Joint4,5,6 is the Spherical Wrist, so the Wrist Center(WC) and the orientation of the End Effector(EE) can be palatable independently. To do this, I did solve the position of WC then I address the composition of rotation of the orient of EE. The hole of the axis and angles are in the figures.  
 The calculation of WC position is below;
 ```
 pos0_WC = pos0_EE - d7 * rot0_E[:,2]
 ```
 where;
- * pos0_WC : Location of the WC in the base frame
- * pos0_EE : Location of the EE in the base frame
- * d7 : Link length from WC to EE
- * rot0_E : Rotation of the EE in the base frame
+ * pos0_WC: Location of the WC in the base frame
+ * pos0_EE: Location of the EE in the base frame
+ * d7: Link length from WC to EE
+ * rot0_E: Rotation of the EE in the base frame
 
-In below we will calculate the theta1,2,3. In the basis to do that, we already know the position of all the joints in the base frame, so we will re-calculate the angles of joint using the position(=Inverse Kinematics).
+In below we will calculate the theta1,2,3. In the basis to do that, we already know the position of all the joints in the base frame so that we will re-calculate the angles of joint using the position(=Inverse Kinematics).
 
 First, we calculate the theta 1 of Joint1 which is based on the x and y position of WC;
 ![image5](./misc_images/writeup7.jpg)
@@ -151,6 +151,6 @@ theta6 = atan2(-rot3_6[1, 1], rot3_6[1, 0])
 
 #### 1. Fill in the `IK_server.py` file with properly commented python code for calculating Inverse Kinematics based on previously performed Kinematic Analysis. Your code must guide the robot to successfully complete 8/10 pick and place cycles. Briefly discuss the code you implemented and your results.
 
-In the initialize_global_variables() function, I did the initialization of valuables to make the code readable. Of course I did the Inverse Kinematics to empower the arm, and also implement the Forward kinematics to calculate the EE position Error.
+In the initialize_global_variables() function, I did the initialization of valuables to make the code readable. Of course, I did the Inverse Kinematics to empower the arm, and also implement the Forward kinematics to calculate the EE position Error.
 
-The result of my implementation, arm can catch the cylinder and drop it into the garbage can. The trajectory of the arm is not bad, but there are the improvable point. That is the arm path route is not efficiently. The arm first folds, then rotates, moves to the front of the cylinder, and moves to orient the wrist. Actually it may be easier to see the movement in the sense of separating motion, but I think that it is more efficient to carry out all at the same time.
+The result of my implementation, the arm can catch the cylinder and drop it into the garbage can. The trajectory of the arm is not wrong, but there is the improbable point. That is the arm path route is not efficiently. The arm first folds, then rotates, moves to the front of the cylinder, and moves to orient the wrist. It may be easier to see the movement in the sense of separating motion, but I think that it is more efficient to carry out all at the same time.
